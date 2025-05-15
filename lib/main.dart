@@ -60,10 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0: 
         page = GeneratorPage();
-        break;
       case 1:
         page = FavoritesPage();
-        break;
       default:
         throw UnimplementedError("No Widget for $selectedIndex");
     }
@@ -141,14 +139,18 @@ class BigCard extends StatelessWidget {
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
 
     IconData icon;
+    Color iconColor;
     if (appState.favorites.contains(pair)) {
       icon = Icons.favorite;
+      iconColor = Colors.pink.shade200;
     } else {
       icon = Icons.favorite_border;
+      iconColor = theme.colorScheme.primary;
     }
 
     return Center(
@@ -165,7 +167,10 @@ class GeneratorPage extends StatelessWidget {
                   appState.toggleFavorite();
                 },
                 label: Text('Like'),
-                icon: Icon(icon),
+                icon: Icon(
+                  icon,
+                  color: iconColor,
+                ),
               ),
               SizedBox(width: 10),
               ElevatedButton(
@@ -185,24 +190,53 @@ class GeneratorPage extends StatelessWidget {
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
     var favorites = appState.favorites;
     var index = 1;
+
+    if (favorites.isEmpty) {
+      return Center(
+        child: Text("No favorites yet."),
+      );
+    }
 
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(6,10,6,10),
+              child: Text(
+                "You have ${favorites.length} favorites:",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
             for (var fav in favorites) 
-              ListTile(
-                title: Text(fav.asLowerCase),
-                leading: Text("${(index++).toString()}."),
-                minLeadingWidth: 0,
-                onTap: () => {
-                  print(fav)
-                },
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 2.5),
+                decoration: BoxDecoration(
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ListTile(
+                  title: Text(fav.asLowerCase),
+                  horizontalTitleGap: 10,
+                  leading: Icon(
+                    Icons.favorite,
+                    size: 15,
+                    color: Colors.pink.shade200,
+                  ),
+                  minLeadingWidth: 0,
+                  minTileHeight: 10,
+                  onTap: () => {
+                    print(fav)
+                  },
+                ),
               ),
           ],
         ),
