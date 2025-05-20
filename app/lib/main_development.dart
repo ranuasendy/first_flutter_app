@@ -7,5 +7,5 @@ import 'main.dart';
 
 void main() {
   Logger.root.level = Level.ALL;
-  runApp(MultiProvider(providers: providersLocal, child: const MyApp()));
+  // runApp(MultiProvider(providers: providersLocal, child: const MainApp()));
 }
